@@ -15,7 +15,7 @@ Finally, R Markdown file (data_representation.Rmd) contains code chunks to repre
 
 ## Conformation populations 
 
-<img src="plots/nnr_probabilities_aa2_aa3.png.png">
+<img src="plots/nnr_probabilities_aa2_aa3.png">
 
 ## Combination probabilities
 
