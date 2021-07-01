@@ -9,6 +9,8 @@ Specifically, independent_arrays.py and conditional_arrays.py generate the 2d ar
 
 Finally, R Markdown file (data_representation.Rmd) contains code chunks to represente graphically combination probabilites, population data and Ramachandran plot. Specifically, this scripts generate a png file for each data representation.
 
+In this case, the data used for the example output files was from penta-alanine simulation.
+
 ## Ramachandran plot
 
 <img src="plots/ramachandran.png">
@@ -22,5 +24,4 @@ Finally, R Markdown file (data_representation.Rmd) contains code chunks to repre
 <img src="plots/combinations.png">
 
 
-In this case, the data used for the example output files was from penta-alanine simulation.
 
