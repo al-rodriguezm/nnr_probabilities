@@ -15,7 +15,7 @@ rm -rf probabilities
 # Creamos una carpeta auxiliar donde realizar los distintos procesos
 mkdir aux
 
-cp  $1/tray0*/pent* aux
+cp  $1/tray0*/$2*raman.dat.gz aux
 
 gunzip aux/$2*
 cat aux/* | sed '/^ *$/d' > rama.dat

@@ -12,24 +12,22 @@ len_aa=4
 simulation_probs=np.loadtxt("simulacion-poblaciones-ordenados.dat",dtype=str)  # Cargamos el archivo de probabilidades calculados en la simulación
 probabilities=[]
 
-with open('probabilities/independent_probabilities.csv', 'r') as read_obj:
-    # pass the file object to reader() to get the reader object
+with open('probabilities/simulation_probabilities.csv', 'r') as read_obj:
     csv_reader = csv.reader(read_obj)
-    # Pass reader object to list() to get a list of lists
-    independent_probs = list(csv_reader)
-    independent_probs.pop(0)   
-    probabilities.append(independent_probs)
-with open('probabilities/directe_conditional_probabilities.csv', 'r') as read_obj:
-    # pass the file object to reader() to get the reader object
+    simulation_probs = list(csv_reader)
+    simulation_probs.pop(0)   
+with open('probabilities/global_probabilities.csv', 'r') as read_obj:
     csv_reader = csv.reader(read_obj)
-    # Pass reader object to list() to get a list of lists
-    directe_cond_probs = list(csv_reader)  
-    directe_cond_probs.pop(0)
-    probabilities.append(directe_cond_probs)
+    global_probs = list(csv_reader)
+    global_probs.pop(0)   
+    probabilities.append(global_probs)
+with open('probabilities/direct_conditional_probabilities.csv', 'r') as read_obj:
+    csv_reader = csv.reader(read_obj)
+    direct_cond_probs = list(csv_reader)  
+    direct_cond_probs.pop(0)
+    probabilities.append(direct_cond_probs)
 with open('probabilities/inverse_conditional_probabilities.csv', 'r') as read_obj:
-    # pass the file object to reader() to get the reader object
     csv_reader = csv.reader(read_obj)
-    # Pass reader object to list() to get a list of lists
     inverse_cond_probs = list(csv_reader)  
     inverse_cond_probs.pop(0)
     probabilities.append(inverse_cond_probs)
@@ -59,15 +57,14 @@ for n in simulation_probabilities:
 
 # Exportar csv
 
-with open('probabilities/probabilities_comparation.csv','w',newline='') as out:
+with open('probabilities/combination_probabilities.csv','w',newline='') as out:
     csv_out=csv.writer(out)
-    csv_out.writerow(['combination','indepent_prob','directe_cond_prob','inverse_cond_prob'])
+    csv_out.writerow(['combination','simulation','global_prob','direct_cond_prob','inverse_cond_prob'])
     for row in comparation:
         csv_out.writerow(row)     
 
 # Diferencias
 # Para calcular las diferencias entre los datos de simulaciones y las aproximaciones realizadas (independent y NNR)
-
 
 differences=[]
 for n in simulation_probabilities:
@@ -83,14 +80,10 @@ for n in simulation_probabilities:
         combination.append(abs(float(i[j][1])-float(n[1])))
     differences.append(combination)
 
-for i in differences:
-    print(i)
-
-
 # Exportar csv
 
-with open('probabilities/differences_comparation.csv','w',newline='') as out:
+with open('probabilities/combination_diferences.csv','w',newline='') as out:
     csv_out=csv.writer(out)
-    csv_out.writerow(['combination','indepent_prob','directe_cond_prob','inverse_cond_prob'])
+    csv_out.writerow(['combination','simulation','global_prob','direct_cond_prob','inverse_cond_prob'])
     for row in differences:
         csv_out.writerow(row)     

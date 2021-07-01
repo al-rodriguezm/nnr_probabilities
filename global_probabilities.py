@@ -7,7 +7,7 @@ import csv
 
 len_aa=4 
 
-array=np.load("arrays/independent_arrays.npy")
+array=np.load("arrays/global_arrays.npy")
 
 normalized_population_arrays=[]
 for i in array:
@@ -75,7 +75,7 @@ for i in range(0, len(probabilities)):
 
 # Exportar a csv
 
-with open('probabilities/independent_probabilities.csv','w',newline='') as out:
+with open('probabilities/global_probabilities.csv','w',newline='') as out:
     csv_out=csv.writer(out)
     csv_out.writerow(['structure','probabilty'])
     for row in probabilities:

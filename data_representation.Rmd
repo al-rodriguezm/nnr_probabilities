@@ -5,9 +5,26 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-setwd("/home/alumno14/TFM")
+setwd("/home/alumno14/TFM/nnr_probabilities_analysis")  # patwhay where plot files are found
 library(stringr)
 library(plot3D)
+library(ggplot2)
+```
+
+## Population data
+
+```{r}
+n = 1 # Residuo de interés
+files=list.files("./population",full.names=TRUE)
+population <- lapply(files, read.csv)
+population[[n]]
+```
+## T-Student test
+
+```{r}
+set.seed(10)
+test <- t.test(combinations$direct_cond_prob,combinations$inverse_cond_prob) 
+test
 ```
 
 ## Ramachandran plot
@@ -16,49 +33,49 @@ library(plot3D)
 ramachandran_plot <- read.table("./plots/ramachandran_plot.txt", quote="\"", comment.char="")
 ramachandran_plot[ramachandran_plot<=0]=NA
 ramachandran_plot=as.matrix(ramachandran_plot)
-png("./plots/ramachandran.png",width = 1024, height = 1024)
+png("./plots/ramachandran.png",width = 1024, height = 975)
+par(mar=c(8,6,6,6))
 x <- seq(-180, 179)
 y <- seq(180, -179)
 Phi = c(-80, -60, -130)
 Psi = c(-20, 145, 140)
+d=c(50,30,40)  #Diferencia
 axpos <- seq(-150, 150, 50)
 axtext <- as.character(axpos)
-axtext <- paste(axtext, "º", sep = "")
+axtext <- paste(axtext, "°", sep = "")
 # par(pin = c(3.32, 2.75))
 image2D(x = x, y = y, z = ramachandran_plot, 
-        main = "Diagrama de Ramachandran", cex.main = 1,
+        main = "Diagrama de Ramachandran de la pentalanina", cex.main = 2.15,
         lighting = F, clog = T, 
-        colkey = list(side = 4, side.clab = 3, cex.axis = 0.7, width = 0.75,
-                      cex.clab = 0.8),
+        colkey = list(side = 4, side.clab = 3, cex.axis = 1.5, width = 0.75,
+                      cex.clab = 1.5),
         clab = "(en %)",
-        xlab = expression(Phi), ylab = expression(Psi), xlim = c(-180, 180), 
+        xlab = expression(Phi), ylab = expression(Psi), xlim = c(-180, 180), cex.lab=1.75,
         ylim = c(-180, 180), rasterImage = T,
         contour = F, asp = 1, xaxt = "n", yaxt = "n")
 # par(pin = c(3.32, 2.75))
-axis(side = 2, at=axpos, labels = axtext, cex.axis = 0.70)
-axis(side = 1, at=axpos, labels = axtext, cex.axis = 0.70)
+axis(side = 2, at=axpos, labels = axtext, cex.axis = 1.5)
+axis(side = 1, at=axpos, labels = axtext, cex.axis = 1.5)
 
 
 for(ang in seq(length(Phi))){
-  d=25
-  tl <- c(Phi[ang]-d, Psi[ang]+d)
-  tr <- c(Phi[ang]+d, Psi[ang]+d)
-  bl <- c(Phi[ang]-d, Psi[ang]-d)
-  br <- c(Phi[ang]+d, Psi[ang]-d)
+  tl <- c(Phi[ang]-d[ang], Psi[ang]+d[ang])
+  tr <- c(Phi[ang]+d[ang], Psi[ang]+d[ang])
+  bl <- c(Phi[ang]-d[ang], Psi[ang]-d[ang])
+  br <- c(Phi[ang]+d[ang], Psi[ang]-d[ang])
   
   segments(x0 = tl[1], y0=tl[2], x1=tr[1], y1=tr[2])
   segments(x0 = tl[1], y0=tl[2], x1=bl[1], y1=bl[2])
   segments(x0 = br[1], y0=br[2], x1=bl[1], y1=bl[2])
   segments(x0 = br[1], y0=br[2], x1=tr[1], y1=tr[2])
-  d=d-5
 }
 
 
 
 
-text(-120, -20, labels=expression(alpha))
-text(-10, 145, labels=expression(PPII))
-text(-170, 140, labels=expression(beta))
+text(-80, -80, labels=expression(alpha),cex=2)
+text(-60, 105, labels=expression(ppII),cex=2)
+text(-130, 90, labels=expression(beta),cex=2)
 dev.off()
 ```
 
@@ -112,6 +129,108 @@ dev.off()
 
 ## Conditional NNR probabilities density population plots
 
+### aa1 analysis (alpha and ppi in alpha, beta, ppii and ind)
+
+```{r}
+dir <- "./plots/"
+files=list.files("./plots",full.names=TRUE)
+files=files[str_detect(files, "array_aa1")]  # El aminoácido que queremos estudiar
+n=1
+arrays=list()
+for(f in files){
+  array <- read.table(f, quote="\"", comment.char="")
+  arrays[[n]] <- array
+  n=n+1
+}
+
+png("./plots/nnr_probabilities_aa1.png",width = 1300, height = 600)
+x=seq(-180,179)
+y=seq(180,-179)
+par(mfrow=c(2,4),mar = rep(0.5, 4),oma=c(7,15,7,15))
+array=list()
+n=1
+for(a in arrays){
+  par(pin = c(3.32, 2.75))
+  a[a<=0]=NA
+  a=as.matrix(a)
+  axposx <- seq(-130, -30, 20)
+  axposy <- seq(-70, 30, 20)
+  axtextx <- as.character(axposx)
+  axtextx <- paste(axtextx, "º", sep = "")
+  axtexty <- as.character(axposy)
+  axtexty <- paste(axtexty, "º", sep = "")
+  image2D(x = x, y = y, z = a, 
+        lighting = F, 
+        colkey=FALSE,
+        xlab=NULL,
+        clab = "(en %)",
+        xlim = c(-130,-30), 
+        ylim = c(-70,+30), zlim=c(0.0001,0.0015), rasterImage = T,           # PPII
+        contour = T, asp = 1, xaxt = "n", yaxt = "n")
+  
+  abline(v = -80)
+  abline(h = -20)
+
+  if( n==1) {
+  axis(side = 2, at=axposy, labels = axtexty, cex.axis=1.5)
+}
+  axis(side = 1, at=axposx, labels = axtextx, cex.axis=1.5)
+  
+  n=n+1
+}
+
+n=1
+for(a in arrays){
+  par(pin = c(3.32, 2.75))
+  a[a<=0]=NA
+  a=as.matrix(a)
+  axposx <- seq(-90, 30, 20)
+  axposy <- seq(115, 175, 20)
+  axtextx <- as.character(axposx)
+  axtextx <- paste(axtextx, "º", sep = "")
+  axtexty <- as.character(axposy)
+  axtexty <- paste(axtexty, "º", sep = "")
+  image2D(x = x, y = y, z = a, 
+        lighting = F, 
+        colkey=FALSE,
+        xlab=NULL,
+        clab = "(en %)",
+        xlim = c(-90,-30), 
+        ylim = c(115,175), zlim=c(0.0001,0.0015), rasterImage = T,           # PPII
+        contour = T, asp = 1, xaxt = "n", yaxt = "n")
+  
+  abline(v = -60)
+  abline(h = 145)
+
+  if( n==1) {
+  axis(side = 2, at=axposy, labels = axtexty, cex.axis=1.5)
+}
+  axis(side = 1, at=axposx, labels = axtextx, cex.axis=1.5)
+  
+  n=n+1
+}
+
+
+
+mtext(text=expression(phi),side=1,line=3,cex=2,las=1,outer=TRUE)
+mtext(text=expression(psi),side=2,line=3,cex=2,las=2,outer=TRUE)
+mtext(text=expression(aa1(alpha)),side=2,line=2,cex=2,las=1,outer=TRUE,at=0.75)
+mtext(text=expression(aa1(ppII)),side=2,line=2,cex=2,las=1,outer=TRUE,at=0.25)
+
+mtext(text=expression(alpha),side=3,line=1,cex=2,las=1,outer=TRUE,at=0.125)
+mtext(text=expression(beta),side=3,line=1,cex=2,las=1,outer=TRUE,at=0.375)
+mtext(text=expression(ppII),side=3,line=1,cex=2,las=1,outer=TRUE,at=0.63)
+mtext(text=expression(Ind),side=3,line=1,cex=2,las=1,outer=TRUE,at=0.875)
+
+par(fig = c(0, 1, 0, 1), oma = c(9, 1, 9, 1), mar = c(9, 15, 9, 15))
+
+ colkey(side = 4, clim = c(0.0001,0.0015), add = TRUE, adj.clab = 0,length=1.5,width=0.7)
+dev.off()
+
+```
+
+### aa2 and aa3 analysis (ppII in alpha, beta and ppii nnrs)
+
 ```{r}
 dir <- "./plots/"
 files=list.files("./plots",full.names=TRUE)
@@ -139,7 +258,7 @@ for(f in files2){
   n=n+1
 }
 
-png("./plots/nnr_probabilities.png",width = 1024, height = 1024)
+png("./plots/nnr_probabilities_aa2_aa3.png",width = 1024, height = 1024)
 x=seq(-180,179)
 y=seq(180,-179)
 par(mfrow=c(4,3),mar = rep(0, 4),oma=c(9,15,9,15))
@@ -157,11 +276,8 @@ for(a in arrays){
   axpos <- seq(-150, 150, 50)
   axtext <- as.character(axpos)
   axtext <- paste(axtext, "º", sep = "")
-  # par(pin = c(3.32, 2.75))
   image2D(x = x, y = y, z = a, 
         lighting = F, 
-        # colkey = list(side = 4, side.clab = 3, cex.axis = 0.7, width = 0.75,
-        #              cex.clab = 0.8),
         colkey=FALSE,
         clab = "(en %)",
         xlab = expression(Phi), ylab = expression(Psi), xlim = c(-90,-30), 
@@ -170,10 +286,9 @@ for(a in arrays){
   
   abline(h = 145)
   abline(v = -60)
-  
-  # par(pin = c(3.32, 2.75))
+
   if( n==1 || n==4 ) {
-  axis(side = 2, at=axposy, labels = axtexty, cex.axis = 0.70)
+  axis(side = 2, at=axposy, labels = axtexty, cex.axis = 1.5)
 }
 
   n=n+1
@@ -192,23 +307,19 @@ for(a in arrays2){
   # par(pin = c(3.32, 2.75))
   image2D(x = x, y = y, z = a, 
         lighting = F, 
-        # colkey = list(side = 4, side.clab = 3, cex.axis = 0.7, width = 0.75,
-        #               cex.clab = 0.8),
         colkey=FALSE,
         clab = "(en %)",
         xlab = expression(Phi), ylab = expression(Psi), xlim = c(-90,-30), 
         ylim = c(115,175), zlim=c(0.0002,0.0015), rasterImage = T,           # PPII
         contour = T, asp = 1, xaxt = "n", yaxt = "n")
   
-  abline(h = 145)
   abline(v = -60)
-  
-  # par(pin = c(3.32, 2.75))
+  abline(h = 145)
 
     if( n==1 || n==4 ) {
-  axis(side = 2, at=axposy, labels = axtexty, cex.axis = 0.70)
+  axis(side = 2, at=axposy, labels = axtexty, cex.axis = 1.5)
 }
-  axis(side = 1, at=axposx, labels = axtextx, cex.axis = 0.70)
+  axis(side = 1, at=axposx, labels = axtextx, cex.axis = 1.5)
   n=n+1
 }
 
@@ -231,4 +342,94 @@ par(fig = c(0, 1, 0, 1), oma = c(9, 1, 9, 1), mar = c(9, 15, 9, 15))
  colkey(side = 4, clim = c(0.0002,0.0015), add = TRUE, adj.clab = 0,length=0.5,width=0.5)
 dev.off()
 
+```
+### aa4 analysis (ppii in beta, ppii and ind)
+
+```{r}
+dir <- "./plots/"
+files=list.files("./plots",full.names=TRUE)
+files=files[str_detect(files, "array_aa4")]  # El aminoácido que queremos estudiar
+
+
+n=1
+arrays=list()
+for(f in files){
+  array <- read.table(f, quote="\"", comment.char="")
+  arrays[[n]] <- array
+  n=n+1
+}
+
+png("./plots/nnr_probabilities_aa4.png",width = 1024, height = 400)
+x=seq(-180,179)
+y=seq(180,-179)
+par(mfrow=c(1,3),mar = rep(0, 4),oma=c(9,15,9,15))
+array=list()
+
+n=1
+for(a in arrays){
+  par(pin = c(3.32, 2.75))
+  a[a<=0]=NA
+  a=as.matrix(a)
+  axposx <- seq(-90, 30, 20)
+  axposy <- seq(115, 175, 20)
+  axtextx <- as.character(axposx)
+  axtextx <- paste(axtextx, "º", sep = "")
+  axtexty <- as.character(axposy)
+  axtexty <- paste(axtexty, "º", sep = "")
+  image2D(x = x, y = y, z = a, 
+        lighting = F, 
+        colkey=FALSE,
+        xlab=NULL,
+        clab = "(en %)",
+        xlim = c(-90,-30), 
+        ylim = c(115,175), zlim=c(0.0002,0.0015), rasterImage = T,          # PPII
+        contour = T, asp = 1, xaxt = "n", yaxt = "n")
+  
+  abline(v = -60)
+  abline(h = 145)
+
+  if( n==1) {
+  axis(side = 2, at=axposy, labels = axtexty, cex.axis=1.5)
+}
+  axis(side = 1, at=axposx, labels = axtextx, cex.axis=1.5)
+  
+  n=n+1
+}
+
+mtext(text=expression(phi),side=1,line=3,cex=2,las=1,outer=TRUE)
+mtext(text=expression(psi),side=2,line=3,cex=2,las=2,outer=TRUE)
+
+mtext(text=expression(beta),side=3,line=1,cex=2,las=1,outer=TRUE,at=0.15)
+mtext(text=expression(ppII),side=3,line=1,cex=2,las=1,outer=TRUE,at=0.49)
+mtext(text=expression(Ind),side=3,line=1,cex=2,las=1,outer=TRUE,at=0.83)
+
+par(fig = c(0, 1, 0, 1), oma = c(9, 1, 9, 1), mar = c(9, 15, 9, 15))
+
+ colkey(side = 4, clim = c(0.0002,0.0015), add = TRUE, adj.clab = 0,length=1.5,width=0.7)
+dev.off()
+
+```
+# Combination probabilities
+
+Hacer t-test en ambas columnas de probabilidades condicionadas para comprobar que son metodos iguales
+```{r}
+combinations = as.data.frame(read.csv("probabilities/combination_probabilities.csv"))
+combinations_plot=combinations[1:20,]
+combinations_plot$combination=as.character(combinations_plot$combination)
+combinations_plot$combination=factor(combinations_plot$combination,levels=unique(combinations_plot$combination))
+png("./plots/combinations.png",width = 1400, height = 600)
+
+ggplot(combinations_plot, aes(x=combination,group=1)) + 
+geom_line(aes(y= simulation,colour="simulation")) + 
+geom_point(y=combinations_plot$simulation,colour="#C77CFF") +
+geom_line(aes(y= indepent_prob,colour="independent")) + geom_point(y=combinations_plot$indepent_prob,colour="#7CAE00") +
+geom_line(aes(y= direct_cond_prob,colour="directe_cond")) + 
+geom_point(y=combinations_plot$inverse_cond_prob,colour="#00BFC4") +
+labs(x = "Confórmeros moleculares", y= "Probabilidades") + 
+ggtitle("Probabilidades de las confórmeros más frecuentes en la simulación para la pentalanina") +
+theme(legend.title = element_text(color = "blue", size = 12), legend.text=element_text(size=14), axis.text=element_text(size=16), axis.title=element_text(size=14,face="bold"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black"),plot.title = element_text(hjust = 0.5,face="bold",size=25))+scale_fill_brewer(palette = "Paired", direction = 1) +
+scale_color_manual(values = c("#F8766D","#7CAE00","#00BFC4"), labels = c("Condicionadas","Individuales", "Simulación")) + 
+labs(colour = "Aproximación")
+
+dev.off()
 ```

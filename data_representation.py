@@ -1,7 +1,7 @@
 import numpy as np
 import functions as fun
 
-## Conversion de las matrices .npy en .txt para representarlas en los scripts R
+## Conversion de las matrices .npy de interés en .txt para representarlas en los scripts R
 
 path=str(input("Select an array:"))
 
