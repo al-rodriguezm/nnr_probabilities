@@ -5,7 +5,7 @@ import functions as fun
 
 data1=np.loadtxt("rama.dat")
 
-## Generaricón de matrices para cada aminoacido (matrices de 2)
+## Generación de matrices para cada aminoacido (matrices de 2)
 
 data1=fun.aa_array(data1)
 
