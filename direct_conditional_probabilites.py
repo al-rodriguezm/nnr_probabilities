@@ -97,7 +97,7 @@ for i in range(0, len(probabilities)):
 
 # Exportar a csv
 
-with open('probabilities/directe_conditional_probabilities.csv','w',newline='') as out:
+with open('probabilities/direct_conditional_probabilities.csv','w',newline='') as out:
     csv_out=csv.writer(out)
     csv_out.writerow(['structure','probabilty'])
     for row in probabilities:
