@@ -411,7 +411,6 @@ dev.off()
 ```
 # Combination probabilities
 
-Hacer t-test en ambas columnas de probabilidades condicionadas para comprobar que son metodos iguales
 ```{r}
 combinations = as.data.frame(read.csv("probabilities/combination_probabilities.csv"))
 combinations_plot=combinations[1:20,]
@@ -422,14 +421,13 @@ png("./plots/combinations.png",width = 1400, height = 600)
 ggplot(combinations_plot, aes(x=combination,group=1)) + 
 geom_line(aes(y= simulation,colour="simulation")) + 
 geom_point(y=combinations_plot$simulation,colour="#C77CFF") +
-geom_line(aes(y= indepent_prob,colour="independent")) + geom_point(y=combinations_plot$indepent_prob,colour="#7CAE00") +
+  geom_line(aes(y= global_prob,colour="global")) + geom_point(y=combinations_plot$global_prob,colour="#7CAE00") +
 geom_line(aes(y= direct_cond_prob,colour="directe_cond")) + 
 geom_point(y=combinations_plot$inverse_cond_prob,colour="#00BFC4") +
 labs(x = "Confórmeros moleculares", y= "Probabilidades") + 
 ggtitle("Probabilidades de las confórmeros más frecuentes en la simulación para la pentalanina") +
 theme(legend.title = element_text(color = "blue", size = 12), legend.text=element_text(size=14), axis.text=element_text(size=16), axis.title=element_text(size=14,face="bold"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black"),plot.title = element_text(hjust = 0.5,face="bold",size=25))+scale_fill_brewer(palette = "Paired", direction = 1) +
-scale_color_manual(values = c("#F8766D","#7CAE00","#00BFC4"), labels = c("Condicionadas","Individuales", "Simulación")) + 
-labs(colour = "Aproximación")
+scale_color_manual(values = c("#F8766D","#7CAE00","#00BFC4"), labels = c("Condicionada","Global", "Simulación")) + labs(colour = "Aproximación")
 
 dev.off()
 ```
