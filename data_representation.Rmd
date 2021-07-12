@@ -427,7 +427,12 @@ geom_point(y=combinations_plot$inverse_cond_prob,colour="#00BFC4") +
 labs(x = "Confórmeros moleculares", y= "Probabilidades") + 
 ggtitle("Probabilidades de las confórmeros más frecuentes en la simulación para la pentalanina") +
 theme(legend.title = element_text(color = "blue", size = 12), legend.text=element_text(size=14), axis.text=element_text(size=16), axis.title=element_text(size=14,face="bold"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black"),plot.title = element_text(hjust = 0.5,face="bold",size=25))+scale_fill_brewer(palette = "Paired", direction = 1) +
+<<<<<<< HEAD
 scale_color_manual(values = c("#F8766D","#7CAE00","#00BFC4"), labels = c("Condicionada","Global", "Simulación")) + labs(colour = "Aproximación")
+=======
+scale_color_manual(values = c("#F8766D","#7CAE00","#00BFC4"), labels = c("Condicionada","Global", "Simulación")) + 
+labs(colour = "Aproximación")
+>>>>>>> a5c5eed154845760e0c1f07c832c6ab846624bf9
 
 dev.off()
 ```
