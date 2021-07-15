@@ -1,5 +1,5 @@
 # NNR and global probabilities estimation and analysis in peptides or protein fragments
-This module calculates global and NNR dependent probabilites in each peptide residue.
+This module calculates global and NNR conformation dependent probabilites in each peptide residue.
 
 First, workflow.sh bash script creates a workspace where results folder and dihedral angles .dat file  are generated.
 
